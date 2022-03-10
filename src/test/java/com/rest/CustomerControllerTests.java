@@ -44,12 +44,9 @@ import com.rest.Exceptions.NotFoundExceptionHandler;
 import com.rest.Services.CustomerServiceImpl;
 import com.rest.Services.ValidatorService;
 
-import lombok.extern.slf4j.Slf4j;
-
 
 @WebMvcTest(controllers = CustomerController.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Slf4j
 public class CustomerControllerTests {
 	
 	@Autowired
@@ -313,7 +310,6 @@ public class CustomerControllerTests {
 								.andReturn();	
 			
 			String response = result.getResponse().getContentAsString();
-			log.info(response);
 			assertThrows(NotFoundExceptionHandler.class, () -> customerService.findCustomerByID(100));
 			assertEquals("Status : 404 -> Customer with ID 100 does not exist!", response);
 			
