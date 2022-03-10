@@ -35,6 +35,7 @@ public class ControllerExceptionHandler {
 				err.getStatusCode()+" -> "+err.getMessage(), HttpStatus.NOT_FOUND);
 	}
 	
+//new comment for git merge
 	
 	@ExceptionHandler(value = EmailExceptionHandling.class)
 	public ResponseEntity<String> emailExceptionHandler (EmailExceptionHandling ex, WebRequest web) {
