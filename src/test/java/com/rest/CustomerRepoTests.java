@@ -1,0 +1,74 @@
+package com.rest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.rest.Entities.Customer;
+import com.rest.Persistence.CustomerRepo;
+
+@SpringBootTest
+class CustomerRepoTests {
+	
+	@Mock
+	private CustomerRepo repository;
+	
+	@Test
+	@DisplayName("Get CustomerList Count from Repository")
+	void getCustomerListCount() {
+		List<Customer> mockCustomerList = new ArrayList<>();
+		mockCustomerList.add(new Customer(1, "Joshua", "Alvarado", "joshua@email.com", "Manila", null));
+		mockCustomerList.add(new Customer(2, "Joel", "Cerbo", "joel@email.com", "Cebu", null));
+		mockCustomerList.add(new Customer(3, "Mae", "Berondo", "mae@email.com", "Caloocan", null));
+		
+		Mockito.when(repository.findAll()).thenReturn(mockCustomerList);
+		
+		assertEquals(3, repository.findAll().size());
+	}
+	
+	@Test
+	@DisplayName("Get CustomerList from Repository")
+	void getCustomerList() {
+		List<Customer> mockCustomerList = new ArrayList<>();
+		mockCustomerList.add(new Customer(1, "Joshua", "Alvarado", "joshua@email.com", "Manila", null));
+		mockCustomerList.add(new Customer(2, "Joel", "Cerbo", "joel@email.com", "Cebu", null));
+		mockCustomerList.add(new Customer(3, "Mae", "Berondo", "mae@email.com", "Caloocan", null));
+		
+		Mockito.when(repository.findAll()).thenReturn(mockCustomerList);
+		
+		assertEquals(mockCustomerList, repository.findAll());
+	}
+	
+	@Test
+	@DisplayName("Get Customer by ID from Repository")
+	void getCustomerById() {
+		Customer mockCustomer = new Customer(2, "Joel", "Cerbo", "joel@email.com", "Cebu", null);
+		
+		Mockito.when(repository.findById(2)).thenReturn(Optional.of(mockCustomer));
+		
+		assertEquals(2, repository.findById(2).get().getCustId());
+		assertEquals("Joel", repository.findById(2).get().getFirstname());
+		assertEquals("Cerbo", repository.findById(2).get().getLastname());
+		assertEquals("joel@email.com", repository.findById(2).get().getEmail());
+		assertEquals("Cebu", repository.findById(2).get().getLocation());
+	}
+	
+	@Test
+	@DisplayName("Get Customer by Email from Repository")
+	void getCustomerByEmail() {
+		Customer mockCustomer = new Customer(1, "Joshua", "Alvarado", "joshua@email.com", "Manila", null);		
+		
+		Mockito.when(repository.findByEmail("joshua@email.com")).thenReturn(Optional.of(mockCustomer));
+		
+		assertEquals("Joshua", repository.findByEmail("joshua@email.com").get().getFirstname());
+	}
+
+}
