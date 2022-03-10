@@ -16,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -357,9 +356,7 @@ public class CustomerControllerTests {
 									.andExpect(status().isBadRequest())
 									.andReturn();	
 		
-			String response = result.getResponse().getContentAsString();
-			log.info(response);
-			
+			String response = result.getResponse().getContentAsString();		
 			assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
 			assertEquals("{\"email\":\"must be a valid email (ex. a@mail.com)\"}", response);
 				
@@ -394,69 +391,59 @@ public class CustomerControllerTests {
 		}
 		
 		@Test
-		@Order(4)
-		@DisplayName("Delete Customer - Controller Test")
-		void deleteCustomer() throws Exception {
+		@Order(5)
+		@DisplayName("Delete Non Existing Customer - Controller Test")
+		void deleteNonExistingCustomer() throws Exception {
 			Customer mockCustomer = customerList.get(0);
 			
 			when(customerService.findCustomerByID(1)).thenReturn(mockCustomer);
-			doNothing().when(customerService).deleteCustomer(any(Customer.class));
+			when(customerService.findCustomerByID(99))
+					.thenThrow(new NotFoundExceptionHandler("Customer with ID 99 "
+															+ "does not exist! Deletion Failed."));
+			doNothing().when(customerService).deleteCustomer(mockCustomer);
 			customerService.deleteCustomer(mockCustomer);
 			
-			MvcResult result =  mockMvc.perform(delete("/customer/delete/{id}",1)
+			MvcResult result =  mockMvc.perform(delete("/customer/delete/{id}",99)
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(mockCustomer)))
-									.andExpect(status().isOk())
+									.andExpect(status().isNotFound())
 									.andReturn();	
 		
 			String response = result.getResponse().getContentAsString();
-			
-			Customer actualCust = mapper.readValue(response, Customer.class);
-			
-			assertEquals(mockCustomer, actualCust);
-			assertEquals(1, actualCust.getCustId());
-			assertEquals("Joshua", actualCust.getFirstname());
-			assertEquals("Alvarado", actualCust.getLastname());
-			assertEquals("joshua@email.com", actualCust.getEmail());
-			assertEquals("Manila", actualCust.getLocation());
+			assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+			assertEquals("Status : 404 -> "
+						+ "Customer with ID 99 does not exist! Deletion Failed.", response);
 			
 		}
 		
 		@Test
-		@Order(5)
-		@DisplayName("Update Customer - Controller Test")
-		void updateCustomer() throws Exception {
-			Customer mockCustomer = customerList.get(1);
-			Customer update = new Customer(	mockCustomer.getCustId(), "Adrienne", 
-											"Bellosillo", "ad@email.com", "Bacolod", 
-											mockCustomer.getOrders());
+		@Order(6)
+		@DisplayName("Update Non Existing Customer - Controller Test")
+		void updateNonExistingCustomer() throws Exception {
+			Customer mockCustomer = customerList.get(0);
 			
-			when(customerService.findCustomerByID(2)).thenReturn(mockCustomer);
-			when(customerService.updateCustomer(mockCustomer, update)).thenReturn(update);
+			when(customerService.findCustomerByID(1)).thenReturn(mockCustomer);
+			when(customerService.findCustomerByID(98))
+					.thenThrow(new NotFoundExceptionHandler("Customer with ID 98 "
+															+ "does not exist!"));
+			doNothing().when(customerService).deleteCustomer(mockCustomer);
+			customerService.deleteCustomer(mockCustomer);
 			
-			MvcResult result =  mockMvc.perform(put("/customer/update/{id}",2)
-									.accept(MediaType.APPLICATION_JSON)
+			MvcResult result =  mockMvc.perform(delete("/customer/delete/{id}",98)
 									.contentType("application/json")
-									.content(mapper.writeValueAsString(update)))
-									.andExpect(status().isAccepted())
+									.content(mapper.writeValueAsString(mockCustomer)))
+									.andExpect(status().isNotFound())
 									.andReturn();	
 		
 			String response = result.getResponse().getContentAsString();
-			
-			Customer actualCust = mapper.readValue(response, Customer.class);
-			
-			assertNotEquals(mockCustomer, actualCust);
-			assertEquals(2, actualCust.getCustId());
-			assertEquals("Adrienne", actualCust.getFirstname());
-			assertEquals("Bellosillo", actualCust.getLastname());
-			assertEquals("ad@email.com", actualCust.getEmail());
-			assertEquals("Bacolod", actualCust.getLocation());
-			
+			assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+			assertEquals("Status : 404 -> "
+						+ "Customer with ID 98 does not exist!", response);
 		}
 		
 		@Test
-		@Order(5)
-		@DisplayName("Partial Customer Update (First,LastName) - Controller Test")
+		@Order(7)
+		@DisplayName("Partially Update Non Existing Customer (First,LastName) - Controller Test")
 		void updatePartialCustomer() throws Exception {
 			
 			Customer mockCustomer = customerList.get(0);
@@ -469,25 +456,22 @@ public class CustomerControllerTests {
 												mockCustomer.getOrders());
 			
 			when(customerService.findCustomerByID(1)).thenReturn(mockCustomer);
+			when(customerService.findCustomerByID(97))
+			.thenThrow(new NotFoundExceptionHandler("Customer with ID 97 "
+													+ "does not exist!"));
 			when(customerService.custPartialUpdate(mockCustomer, custPartial)).thenReturn(custFinal);
 			
-			MvcResult result =  mockMvc.perform(patch("/customer/partialupdatefirstandlastname/{id}",1)
-									.accept(MediaType.APPLICATION_JSON)
+			MvcResult result =  mockMvc.perform(
+									patch("/customer/partialupdatefirstandlastname/{id}",97)
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(custFinal)))
-									.andExpect(status().isAccepted())
+									.andExpect(status().isNotFound())
 									.andReturn();	
-		
+			
 			String response = result.getResponse().getContentAsString();
-			
-			Customer actualCust = mapper.readValue(response, Customer.class);
-			
-			assertNotEquals(mockCustomer, actualCust);
-			assertEquals(1, actualCust.getCustId());
-			assertEquals("Josh", actualCust.getFirstname());
-			assertEquals("Alva", actualCust.getLastname());
-			assertEquals("joshua@email.com", actualCust.getEmail());
-			assertEquals("Manila", actualCust.getLocation());
+			assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+			assertEquals("Status : 404 -> "
+						+ "Customer with ID 97 does not exist!", response);
 			
 		}	
 	}
