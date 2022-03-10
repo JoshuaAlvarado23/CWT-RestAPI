@@ -27,11 +27,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -42,7 +40,6 @@ import com.rest.Entities.CustFirstLastNameOnly;
 import com.rest.Entities.Customer;
 import com.rest.Exceptions.NotFoundExceptionHandler;
 import com.rest.Services.CustomerServiceImpl;
-import com.rest.Services.ValidatorService;
 
 
 @WebMvcTest(controllers = CustomerController.class)
@@ -56,29 +53,7 @@ public class CustomerControllerTests {
 	private ObjectMapper mapper;
 	
 	@MockBean
-	private ValidatorService validatorService;
-	
-	@MockBean
 	private CustomerServiceImpl customerService;
-	
-	@TestConfiguration
-	static class Context {
-		
-		@Component
-		static class cService {
-			
-			@Autowired
-			private CustomerServiceImpl customerService;
-		}
-		
-		@Component
-		static class validator {
-			
-			@Autowired
-			private ValidatorService validatorService;
-		}
-	}
-	
 	
 	
 	List<Customer> customerList;

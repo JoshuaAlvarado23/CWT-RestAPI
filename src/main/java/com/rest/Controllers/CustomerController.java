@@ -22,7 +22,6 @@ import com.rest.Entities.Customer;
 import com.rest.Exceptions.EmailExceptionHandling;
 import com.rest.Exceptions.NotFoundExceptionHandler;
 import com.rest.Services.ICustomerService;
-import com.rest.Services.ValidatorService;
 
 @RestController
 @RequestMapping("/customer")
@@ -31,8 +30,6 @@ public class CustomerController {
 	@Autowired
 	private ICustomerService customerService;
 	
-	@Autowired
-	private ValidatorService validatorService;
 	
 	@GetMapping("/id/{id}")
 	public Customer getByID(@Valid @PathVariable Integer id) {
