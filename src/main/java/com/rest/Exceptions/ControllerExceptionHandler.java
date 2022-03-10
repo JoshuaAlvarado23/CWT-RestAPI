@@ -35,6 +35,7 @@ public class ControllerExceptionHandler {
 				err.getStatusCode()+" -> "+err.getMessage(), HttpStatus.NOT_FOUND);
 	}
 	
+	
 	@ExceptionHandler(value = EmailExceptionHandling.class)
 	public ResponseEntity<String> emailExceptionHandler (EmailExceptionHandling ex, WebRequest web) {
 		ErrorMessage err = new ErrorMessage(HttpStatus.BAD_REQUEST.value()
