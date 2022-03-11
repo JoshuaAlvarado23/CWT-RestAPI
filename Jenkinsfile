@@ -17,7 +17,7 @@ pipeline {
         
         stage('testCode') {
             steps {
-                sh "mvn test"
+                sh 'mvn test'
             }
             post {
                 success {
@@ -30,8 +30,8 @@ pipeline {
         }
         stage('build') {
             steps {
-                sh "mvn clean"
-                sh "mvn deploy -DaltDeploymentRepository=finalRelease::default::C:\\Users\\collabera\\Desktop\\CWT-RestAPI"
+                sh 'mvn clean'
+                sh 'mvn deploy -DaltDeploymentRepository=finalRelease::default::C:\\Users\\collabera\\Desktop\\CWT-RestAPI'
             }
             
             post {
