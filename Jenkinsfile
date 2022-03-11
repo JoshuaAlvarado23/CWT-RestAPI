@@ -6,7 +6,7 @@ pipeline {
                 git 'https://github.com/JoshuaAlvarado23/CWT-RestAPI.git'
                 
                 withSonarQubeEnv(installationName = 'sonarqube1') {
-                		bat 'mvn clean sonar:sonar'
+                		bat 'mvn clean sonar:sonar -Dsonar.login=a99ac472c10c1ceb26b6d8a283b44bddad38f52a'
                 	}
             }
             post {
