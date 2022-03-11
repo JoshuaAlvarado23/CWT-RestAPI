@@ -4,6 +4,10 @@ pipeline {
         stage('getCode') {
             steps {
                 git 'https://github.com/JoshuaAlvarado23/CWT-RestAPI.git'
+                
+                withSonarQubeEnv(installationName = 'sonarqube1') {
+                		bat 'mvn install sonar:sonar -Dsonar.login=a99ac472c10c1ceb26b6d8a283b44bddad38f52a'
+                	}
             }
             post {
                 success {
@@ -16,8 +20,8 @@ pipeline {
         }
         
         stage('testCode') {
-            steps {              
-            	bat 'mvn test' 
+            steps {
+                bat 'mvn test'
             }
             post {
                 success {
@@ -30,12 +34,9 @@ pipeline {
         }
         stage('build') {
             steps {
-            
             	bat 'if not exist "C:\\Users\\collabera\\Desktop\\CWT-RestAPI" mkdir "C:\\Users\\collabera\\Desktop\\CWT-RestAPI"'
-                 withSonarQubeEnv(installationName = 'sonarqube1') {
-                		bat 'mvn deploy clean sonar:sonar -Dsonar.login=a99ac472c10c1ceb26b6d8a283b44bddad38f52a -DaltDeploymentRepository=finalSnapshot::default::file:C:\\Users\\collabera\\Desktop\\CWT-RestAPI -DskipTests=true'
-                	}
-              	bat ''
+                bat 'mvn clean'
+              	bat 'mvn deploy -DaltDeploymentRepository=finalSnapshot::default::file:C:\\Users\\collabera\\Desktop\\CWT-RestAPI -DskipTests=true'
             }
             
             post {
