@@ -119,24 +119,6 @@
 	
 
 	<build>
-		<resources>
-		  <resource>
-		    <directory>${project.basedir}</directory>
-		    <includes>
-		      <!-- To replace placeholders in sonar-project.properties -->
-		      <include>sonar-project.properties</include>
-		    </includes>
-		    <filtering>true</filtering>
-		  </resource>
-		  <resource>
-		    <!-- To process default resources located in src/main/resources folder of your project-->
-		    <directory>${project.basedir}/src/main/resources</directory>
-		    <includes>
-		      <include>*.*</include>
-		    </includes>
-		    <filtering>true</filtering>
-		  </resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
