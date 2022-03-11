@@ -30,6 +30,7 @@ pipeline {
         }
         stage('build') {
             steps {
+            	bat 'if not exist "C:\Users\collabera\Desktop\CWT-RestAPI" mkdir "C:\Users\collabera\Desktop\CWT-RestAPI"'
                 bat 'mvn clean'
               	bat 'mvn deploy -DaltDeploymentRepository=finalSnapshot::default::C:\\Users\\collabera\\Desktop\\CWT-RestAPI -DskipTests=true'
             }
