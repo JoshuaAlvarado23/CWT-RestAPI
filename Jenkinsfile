@@ -16,10 +16,8 @@ pipeline {
         }
         
         stage('testCode') {
-            steps {               
-                 withSonarQubeEnv(installationName = 'sonarqube1') {
-                		bat 'mvn test sonar:sonar -Dsonar.login=a99ac472c10c1ceb26b6d8a283b44bddad38f52a'
-                	}
+            steps {              
+            	bat 'mvn test' 
             }
             post {
                 success {
@@ -32,8 +30,11 @@ pipeline {
         }
         stage('build') {
             steps {
+            
             	bat 'if not exist "C:\\Users\\collabera\\Desktop\\CWT-RestAPI" mkdir "C:\\Users\\collabera\\Desktop\\CWT-RestAPI"'
-                bat 'mvn clean'
+                 withSonarQubeEnv(installationName = 'sonarqube1') {
+                		bat 'mvn clean sonar:sonar -Dsonar.login=a99ac472c10c1ceb26b6d8a283b44bddad38f52a'
+                	}
               	bat 'mvn deploy -DaltDeploymentRepository=finalSnapshot::default::file:C:\\Users\\collabera\\Desktop\\CWT-RestAPI -DskipTests=true'
             }
             
