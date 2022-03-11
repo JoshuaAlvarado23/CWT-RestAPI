@@ -4,6 +4,9 @@ pipeline {
         stage('getCode') {
             steps {
                 git 'https://github.com/JoshuaAlvarado23/CWT-RestAPI.git'
+                
+                withSonarQubeEnv(installationName = sonarqube1) {
+                bat 'mvn clean sonar:sonar'
             }
             post {
                 success {
