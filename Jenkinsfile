@@ -33,9 +33,9 @@ pipeline {
             
             	bat 'if not exist "C:\\Users\\collabera\\Desktop\\CWT-RestAPI" mkdir "C:\\Users\\collabera\\Desktop\\CWT-RestAPI"'
                  withSonarQubeEnv(installationName = 'sonarqube1') {
-                		bat 'mvn clean sonar:sonar -Dsonar.login=a99ac472c10c1ceb26b6d8a283b44bddad38f52a'
+                		bat 'mvn deploy clean sonar:sonar -Dsonar.login=a99ac472c10c1ceb26b6d8a283b44bddad38f52a -DaltDeploymentRepository=finalSnapshot::default::file:C:\\Users\\collabera\\Desktop\\CWT-RestAPI -DskipTests=true'
                 	}
-              	bat 'mvn deploy -DaltDeploymentRepository=finalSnapshot::default::file:C:\\Users\\collabera\\Desktop\\CWT-RestAPI -DskipTests=true'
+              	bat ''
             }
             
             post {
