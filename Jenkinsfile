@@ -31,7 +31,7 @@ pipeline {
         stage('build') {
             steps {
                 bat 'mvn clean'
-                bat 'mvn deploy -DaltDeploymentRepository=finalRelease::default::C:\\Users\\collabera\\Desktop\\CWT-RestAPI'
+              	bat 'mvn deploy -DaltDeploymentRepository=snapshot-repo::default::C:\\Users\\collabera\\Desktop\\CWT-RestAPI' -Dmaven.test.skip=true
             }
             
             post {
