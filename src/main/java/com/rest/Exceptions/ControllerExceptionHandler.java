@@ -15,6 +15,7 @@ import org.springframework.web.context.request.WebRequest;
 @ControllerAdvice
 public class ControllerExceptionHandler {
 	
+	
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<String> globalExceptionHandler (Exception ex, WebRequest web) {
 		ErrorMessage err = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.value()

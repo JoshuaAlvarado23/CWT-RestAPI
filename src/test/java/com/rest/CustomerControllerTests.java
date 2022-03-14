@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -32,6 +34,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,6 +56,9 @@ public class CustomerControllerTests {
 	@Autowired
 	private ObjectMapper mapper;
 	
+	@Autowired
+	private WebApplicationContext context;
+	
 	@MockBean
 	private CustomerServiceImpl customerService;
 	
@@ -69,6 +76,12 @@ public class CustomerControllerTests {
 			customerList.add(new Customer(1, "Joshua", "Alvarado", "joshua@email.com", "Manila", null));
 			customerList.add(new Customer(2, "Joel", "Cerbo", "joel@email.com", "Cebu", null));
 			customerList.add(new Customer(3, "Mae", "Berondo", "mae@email.com", "Caloocan", null));
+			
+			mockMvc = MockMvcBuilders
+					.webAppContextSetup(context)
+					.apply(springSecurity())
+					.build();
+		
 		}
 		
 		@AfterEach
@@ -81,7 +94,6 @@ public class CustomerControllerTests {
 		@DisplayName("Get Customer By ID - Controller Test")
 		void getCustomerById() throws Exception {
 			Customer customer = customerList.get(0);
-		
 			
 			when(customerService.findCustomerByID(1)).thenReturn(customer);
 			
@@ -122,6 +134,7 @@ public class CustomerControllerTests {
 			
 		}
 		
+		
 		@Test
 		@Order(3)
 		@DisplayName("Create Customer - Controller Test")
@@ -130,7 +143,8 @@ public class CustomerControllerTests {
 			
 			when(customerService.createCustomer(any(Customer.class))).thenReturn(mockCustomer);
 			
-			MvcResult result =  mockMvc.perform(post("/customer/create")
+			MvcResult result =  mockMvc.perform(post("/customer/secured/create")
+									.with(httpBasic("admin", "1234"))
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(mockCustomer)))
 									.andExpect(status().isCreated())
@@ -159,7 +173,8 @@ public class CustomerControllerTests {
 			doNothing().when(customerService).deleteCustomer(any(Customer.class));
 			customerService.deleteCustomer(mockCustomer);
 			
-			MvcResult result =  mockMvc.perform(delete("/customer/delete/{id}",1)
+			MvcResult result =  mockMvc.perform(delete("/customer/secured/delete/{id}",1)
+									.with(httpBasic("admin", "1234"))
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(mockCustomer)))
 									.andExpect(status().isOk())
@@ -190,7 +205,8 @@ public class CustomerControllerTests {
 			when(customerService.findCustomerByID(2)).thenReturn(mockCustomer);
 			when(customerService.updateCustomer(mockCustomer, update)).thenReturn(update);
 			
-			MvcResult result =  mockMvc.perform(put("/customer/update/{id}",2)
+			MvcResult result =  mockMvc.perform(put("/customer/secured/update/{id}",2)
+									.with(httpBasic("admin", "1234"))
 									.accept(MediaType.APPLICATION_JSON)
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(update)))
@@ -227,7 +243,8 @@ public class CustomerControllerTests {
 			when(customerService.findCustomerByID(1)).thenReturn(mockCustomer);
 			when(customerService.custPartialUpdate(mockCustomer, custPartial)).thenReturn(custFinal);
 			
-			MvcResult result =  mockMvc.perform(patch("/customer/partialupdatefirstandlastname/{id}",1)
+			MvcResult result =  mockMvc.perform(patch("/customer/secured/partialupdatefirstandlastname/{id}",1)
+									.with(httpBasic("admin", "1234"))
 									.accept(MediaType.APPLICATION_JSON)
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(custFinal)))
@@ -293,6 +310,27 @@ public class CustomerControllerTests {
 		
 		@Test
 		@Order(2)
+		@DisplayName("Create Customer - Invalid Credentials - Controller Test")
+		void createInvalidCredsCustomer() throws Exception {
+			Customer mockCustomer = customerList.get(2);
+			
+			when(customerService.createCustomer(mockCustomer)).thenReturn(mockCustomer);
+			
+			MvcResult result =  mockMvc.perform(post("/customer/secured/create")
+									.with(httpBasic("user", "1234"))
+									.contentType("application/json")
+									.content(mapper.writeValueAsString(mockCustomer)))
+									.andExpect(status().isUnauthorized())
+									.andReturn();	
+		
+			String response = result.getResponse().getContentAsString();
+			assertEquals(HttpStatus.UNAUTHORIZED.value(), result.getResponse().getStatus());
+			assertEquals("{\"Status 401\":\"Bad credentials\"}", response);
+				
+		}
+		
+		@Test
+		@Order(3)
 		@DisplayName("Create Customer - Invalid First Name - Controller Test")
 		void createInvalidFNameCustomer() throws Exception {
 			Customer mockCustomer = customerList.get(2);
@@ -300,7 +338,8 @@ public class CustomerControllerTests {
 			
 			when(customerService.createCustomer(mockCustomer)).thenReturn(mockCustomer);
 			
-			MvcResult result =  mockMvc.perform(post("/customer/create")
+			MvcResult result =  mockMvc.perform(post("/customer/secured/create")
+									.with(httpBasic("admin", "1234"))
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(mockCustomer)))
 									.andExpect(status().isBadRequest())
@@ -313,7 +352,7 @@ public class CustomerControllerTests {
 		}
 		
 		@Test
-		@Order(3)
+		@Order(4)
 		@DisplayName("Create Customer - Invalid Email - Controller Test")
 		void createInvalidEmailCustomer() throws Exception {
 			Customer mockCustomer = customerList.get(1);
@@ -321,7 +360,8 @@ public class CustomerControllerTests {
 			
 			when(customerService.createCustomer(mockCustomer)).thenReturn(mockCustomer);
 			
-			MvcResult result =  mockMvc.perform(post("/customer/create")
+			MvcResult result =  mockMvc.perform(post("/customer/secured/create")
+									.with(httpBasic("admin", "1234"))
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(mockCustomer)))
 									.andExpect(status().isBadRequest())
@@ -334,7 +374,7 @@ public class CustomerControllerTests {
 		}
 		
 		@Test
-		@Order(4)
+		@Order(5)
 		@DisplayName("Create Customer - Null Values - Controller Test")
 		void createCustomerWithNullValues() throws Exception {
 			Customer mockCustomer = customerList.get(2);
@@ -343,7 +383,8 @@ public class CustomerControllerTests {
 			
 			when(customerService.createCustomer(mockCustomer)).thenReturn(mockCustomer);
 			
-			MvcResult result =  mockMvc.perform(post("/customer/create")
+			MvcResult result =  mockMvc.perform(post("/customer/secured/create")
+									.with(httpBasic("admin", "1234"))
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(mockCustomer)))
 									.andExpect(status().isBadRequest())
@@ -361,8 +402,31 @@ public class CustomerControllerTests {
 				
 		}
 		
+		
 		@Test
-		@Order(5)
+		@Order(6)
+		@DisplayName("Delete Customer Using Invalid Credentials- Controller Test")
+		void deleteCustomerInvCreds() throws Exception {
+			Customer mockCustomer = customerList.get(0);
+			
+			when(customerService.findCustomerByID(1)).thenReturn(mockCustomer);
+			doNothing().when(customerService).deleteCustomer(any(Customer.class));
+			customerService.deleteCustomer(mockCustomer);
+			
+			MvcResult result =  mockMvc.perform(delete("/customer/secured/delete/{id}",1)
+									.with(httpBasic("admin", "nottheapassword"))
+									.contentType("application/json")
+									.content(mapper.writeValueAsString(mockCustomer)))
+									.andExpect(status().isUnauthorized())
+									.andReturn();	
+		
+			String response = result.getResponse().getContentAsString();
+			assertEquals(HttpStatus.UNAUTHORIZED.value(), result.getResponse().getStatus());
+			assertEquals("{\"Status 401\":\"Bad credentials\"}", response);
+
+		}
+		@Test
+		@Order(7)
 		@DisplayName("Delete Non Existing Customer - Controller Test")
 		void deleteNonExistingCustomer() throws Exception {
 			Customer mockCustomer = customerList.get(0);
@@ -374,7 +438,8 @@ public class CustomerControllerTests {
 			doNothing().when(customerService).deleteCustomer(mockCustomer);
 			customerService.deleteCustomer(mockCustomer);
 			
-			MvcResult result =  mockMvc.perform(delete("/customer/delete/{id}",99)
+			MvcResult result =  mockMvc.perform(delete("/customer/secured/delete/{id}",99)
+									.with(httpBasic("admin", "1234"))
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(mockCustomer)))
 									.andExpect(status().isNotFound())
@@ -388,7 +453,33 @@ public class CustomerControllerTests {
 		}
 		
 		@Test
-		@Order(6)
+		@Order(8)
+		@DisplayName("Updating Customer Using Invalid Credentials- Controller Test")
+		void updateCustomerInvCreds() throws Exception {
+			Customer mockCustomer = customerList.get(1);
+			Customer update = new Customer(	mockCustomer.getCustId(), "Adrienne", 
+											"Bellosillo", "ad@email.com", "Bacolod", 
+											mockCustomer.getOrders());
+			
+			when(customerService.findCustomerByID(2)).thenReturn(mockCustomer);
+			when(customerService.updateCustomer(mockCustomer, update)).thenReturn(update);
+			
+			MvcResult result =  mockMvc.perform(put("/customer/secured/update/{id}",2)
+									.with(httpBasic("admin", "nopass"))
+									.accept(MediaType.APPLICATION_JSON)
+									.contentType("application/json")
+									.content(mapper.writeValueAsString(update)))
+									.andExpect(status().isUnauthorized())
+									.andReturn();	
+		
+			String response = result.getResponse().getContentAsString();
+			assertEquals(HttpStatus.UNAUTHORIZED.value(), result.getResponse().getStatus());
+			assertEquals("{\"Status 401\":\"Bad credentials\"}", response);
+
+		}
+		
+		@Test
+		@Order(9)
 		@DisplayName("Update Non Existing Customer - Controller Test")
 		void updateNonExistingCustomer() throws Exception {
 			Customer mockCustomer = customerList.get(0);
@@ -400,7 +491,8 @@ public class CustomerControllerTests {
 			doNothing().when(customerService).deleteCustomer(mockCustomer);
 			customerService.deleteCustomer(mockCustomer);
 			
-			MvcResult result =  mockMvc.perform(delete("/customer/delete/{id}",98)
+			MvcResult result =  mockMvc.perform(delete("/customer/secured/delete/{id}",98)
+									.with(httpBasic("admin", "1234"))
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(mockCustomer)))
 									.andExpect(status().isNotFound())
@@ -413,7 +505,7 @@ public class CustomerControllerTests {
 		}
 		
 		@Test
-		@Order(7)
+		@Order(10)
 		@DisplayName("Partially Update Non Existing Customer (First,LastName) - Controller Test")
 		void updatePartialCustomer() throws Exception {
 			
@@ -433,7 +525,8 @@ public class CustomerControllerTests {
 			when(customerService.custPartialUpdate(mockCustomer, custPartial)).thenReturn(custFinal);
 			
 			MvcResult result =  mockMvc.perform(
-									patch("/customer/partialupdatefirstandlastname/{id}",97)
+									patch("/customer/secured/partialupdatefirstandlastname/{id}",97)
+									.with(httpBasic("admin", "1234"))
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(custFinal)))
 									.andExpect(status().isNotFound())

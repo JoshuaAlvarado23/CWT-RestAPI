@@ -12,4 +12,12 @@ public class NotFoundExceptionHandler extends RuntimeException{
 		super(message);
 	}
 	
+	public NotFoundExceptionHandler(int id) {
+		super("Customer with ID " + id + " does not exist!");
+	}
+	
+	public NotFoundExceptionHandler(int id, String message) {
+		super("Customer with ID " + id + " does not exist! " +message);
+	}
+	
 }
