@@ -21,7 +21,7 @@ pipeline {
         
         stage('testCode') {
             steps {
-                bat 'mvn install test'
+                bat 'mvn test'
             }
             post {
                 success {
