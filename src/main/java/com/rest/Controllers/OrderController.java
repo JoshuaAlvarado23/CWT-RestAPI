@@ -1,4 +1,4 @@
-package com.rest.Controllers;
+package com.rest.controllers;
 
 import java.util.List;
 
@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rest.Entities.Customer;
-import com.rest.Entities.Orders;
-import com.rest.Exceptions.NotFoundExceptionHandler;
-import com.rest.Services.ICustomerService;
-import com.rest.Services.IOrderService;
+import com.rest.entities.Customer;
+import com.rest.entities.Orders;
+import com.rest.exceptions.NotFoundExceptionHandler;
+import com.rest.services.ICustomerService;
+import com.rest.services.IOrderService;
 
 @RestController
 @RequestMapping("/order")

@@ -39,11 +39,11 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rest.Controllers.CustomerController;
-import com.rest.Entities.CustFirstLastNameOnly;
-import com.rest.Entities.Customer;
-import com.rest.Exceptions.NotFoundExceptionHandler;
-import com.rest.Services.CustomerServiceImpl;
+import com.rest.controllers.CustomerController;
+import com.rest.entities.CustFirstLastNameOnly;
+import com.rest.entities.Customer;
+import com.rest.exceptions.NotFoundExceptionHandler;
+import com.rest.services.CustomerServiceImpl;
 
 
 @WebMvcTest(controllers = CustomerController.class)

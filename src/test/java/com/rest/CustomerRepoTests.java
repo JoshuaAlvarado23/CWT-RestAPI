@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.rest.Entities.Customer;
-import com.rest.Persistence.CustomerRepo;
+import com.rest.entities.Customer;
+import com.rest.persistence.CustomerRepo;
 
 @SpringBootTest
 class CustomerRepoTests {

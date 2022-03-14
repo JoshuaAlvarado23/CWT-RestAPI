@@ -1,4 +1,4 @@
-package com.rest.Services;
+package com.rest.services;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,9 +13,8 @@ public class ValidatorService {
 	public Map<String,String> validate (BindingResult bindingResult) {
 		
 		Map<String, String> output = new HashMap<>();
-		bindingResult.getFieldErrors().stream().forEach(err->{
-			output.put(err.getField(), err.getDefaultMessage());
-		});
+		bindingResult.getFieldErrors().stream().forEach(err->
+														output.put(err.getField(), err.getDefaultMessage()));
 		
 		return output;
 	}

@@ -1,4 +1,4 @@
-package com.rest.Configurations;
+package com.rest.configurations;
 
 import java.io.IOException;
 

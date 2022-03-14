@@ -1,4 +1,4 @@
-package com.rest.Exceptions;
+package com.rest.exceptions;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -51,9 +51,8 @@ public class ControllerExceptionHandler {
 	@ExceptionHandler(value = MethodArgumentNotValidException.class)
 	public ResponseEntity<Map<String, String>> validationErrorHandler (BindingResult e) {
 		Map<String, String> validationErrors = new HashMap<>();
-		e.getFieldErrors().stream().forEach(err -> {
-			validationErrors.put(err.getField(), err.getDefaultMessage());
-		});
+		e.getFieldErrors().stream().forEach(err -> 
+											validationErrors.put(err.getField(), err.getDefaultMessage()));
 		return new ResponseEntity<>(validationErrors, HttpStatus.BAD_REQUEST);
 	}
 

@@ -1,4 +1,4 @@
-package com.rest.Controllers;
+package com.rest.controllers;
 
 import java.util.List;
 import java.util.Map;
@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rest.Entities.CustFirstLastNameOnly;
-import com.rest.Entities.Customer;
-import com.rest.Exceptions.EmailExceptionHandling;
-import com.rest.Exceptions.NotFoundExceptionHandler;
-import com.rest.Services.ICustomerService;
+import com.rest.entities.CustFirstLastNameOnly;
+import com.rest.entities.Customer;
+import com.rest.exceptions.EmailExceptionHandling;
+import com.rest.exceptions.NotFoundExceptionHandler;
+import com.rest.services.ICustomerService;
 
 import lombok.extern.slf4j.Slf4j;
 

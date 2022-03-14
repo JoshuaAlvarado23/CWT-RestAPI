@@ -1,4 +1,4 @@
-package com.rest.Services;
+package com.rest.services;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.rest.Entities.CustFirstLastNameOnly;
-import com.rest.Entities.Customer;
-import com.rest.Persistence.CustomerRepo;
+import com.rest.entities.CustFirstLastNameOnly;
+import com.rest.entities.Customer;
+import com.rest.persistence.CustomerRepo;
 
 
 @Service

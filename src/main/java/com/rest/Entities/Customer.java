@@ -1,4 +1,4 @@
-package com.rest.Entities;
+package com.rest.entities;
 
 import java.util.List;
 
@@ -26,26 +26,33 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Customer {
+	
+	private static final String NAMEREGEX = "^[A-Za-z]+$";
+	private static final String NAMEMSG = "should only contain letters.";
+	private static final String NAMEMAXLENGTHMSG = "lenght should be between 2 and 20";
+	private static final String NOTBLANKMSG = "cannot be blank.";
+	private static final String EMAILMSG = "must be a valid email (ex. a@mail.com)";
+	private static final String EMAILMAXLENGTHMSG = "length should be between 7 and 20";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer custId;
 	
-	@NotBlank(message = "cannot be blank.")
-	@Size(min = 2, max = 20, message = "lenght should be between 2 and 20")
-	@Pattern(regexp = "^[A-Za-z]+$", message = "should only contain letters.")
+	@NotBlank(message = NOTBLANKMSG)
+	@Size(min = 2, max = 20, message = NAMEMAXLENGTHMSG)
+	@Pattern(regexp = NAMEREGEX, message = NAMEMSG)
 	@Column(name = "first_name", length = 20)
 	private String firstname;
 	
-	@NotBlank(message = "cannot be blank.")
-	@Size(min = 2, max = 20,  message = "lenght should be between 2 and 20")
-	@Pattern(regexp = "^[A-Za-z]+$",  message = "should only contain letters.")
+	@NotBlank(message = NOTBLANKMSG)
+	@Size(min = 2, max = 20,  message = NAMEMAXLENGTHMSG)
+	@Pattern(regexp = NAMEREGEX,  message = NAMEMSG)
 	@Column(name = "last_name", length = 20)
 	private String lastname;
 	
-	@NotBlank(message = "should not be blank.")
-	@Email(message = "must be a valid email (ex. a@mail.com)")
-	@Size(min = 7, max = 20, message = "length should be between 7 and 20")
+	@NotBlank(message = NOTBLANKMSG)
+	@Email(message = EMAILMSG)
+	@Size(min = 7, max = 20, message = EMAILMAXLENGTHMSG)
 	@Column(name = "email", length = 20, unique = true)
 	private String email;
 	

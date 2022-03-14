@@ -1,4 +1,4 @@
-package com.rest.Configurations;
+package com.rest.configurations;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -16,9 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private final static String[] PUBLIC_LIST = {"/customer/all","/customer/id/{id}"};
-	private final static String USERNAME = "admin";
-	private final static String PW = "1234";
+	private static final String[] PUBLIC_LIST = {"/customer/all","/customer/id/{id}"};
+	private static final String USERNAME = "admin";
+	private static final String PW = "1234";
 	private enum ROLES {
 		ADMIN, USER
 	}

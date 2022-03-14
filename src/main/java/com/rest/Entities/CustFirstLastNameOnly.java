@@ -1,4 +1,4 @@
-package com.rest.Entities;
+package com.rest.entities;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;

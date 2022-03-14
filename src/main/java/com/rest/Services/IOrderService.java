@@ -1,8 +1,8 @@
-package com.rest.Services;
+package com.rest.services;
 
 import java.util.List;
 
-import com.rest.Entities.Orders;
+import com.rest.entities.Orders;
 
 public interface IOrderService {
 	

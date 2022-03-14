@@ -1,9 +1,9 @@
-package com.rest.Services;
+package com.rest.services;
 
 import java.util.List;
 
-import com.rest.Entities.CustFirstLastNameOnly;
-import com.rest.Entities.Customer;
+import com.rest.entities.CustFirstLastNameOnly;
+import com.rest.entities.Customer;
 
 public interface ICustomerService {
 	
