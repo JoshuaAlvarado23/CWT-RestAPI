@@ -18,7 +18,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final static String[] PUBLIC_LIST = {"/customer/all","/customer/id/{id}"};
 	private final static String USERNAME = "admin";
-	private final static String PASSWORD = "1234";
+	private final static String PW = "1234";
 	private enum ROLES {
 		ADMIN, USER
 	}
@@ -26,7 +26,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	public void adminConfig(AuthenticationManagerBuilder auth) throws Exception {
 		auth.inMemoryAuthentication()
-			.withUser(USERNAME).password(encoder().encode(PASSWORD)).roles(ROLES.ADMIN.name());
+			.withUser(USERNAME).password(encoder().encode(PW)).roles(ROLES.ADMIN.name());
 	}
 
 	@Override
