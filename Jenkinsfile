@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    tools {
+    	
+    }
     stages {
         stage('getCode') {
             steps {
@@ -21,7 +24,7 @@ pipeline {
         
         stage('testCode') {
             steps {
-                bat 'mvn test'
+                bat 'mvn install test'
             }
             post {
                 success {
