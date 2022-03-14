@@ -16,9 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private final String[] PUBLIC_LIST = {"/customer/all","/customer/id/{id}"};
-	private final String USERNAME = "admin";
-	private final String PASSWORD = "1234";
+	private final static String[] PUBLIC_LIST = {"/customer/all","/customer/id/{id}"};
+	private final static String USERNAME = "admin";
+	private final static String PASSWORD = "1234";
 	private enum ROLES {
 		ADMIN, USER
 	}
