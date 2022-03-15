@@ -26,11 +26,8 @@ import com.rest.exceptions.EmailExceptionHandling;
 import com.rest.exceptions.NotFoundExceptionHandler;
 import com.rest.services.ICustomerService;
 
-import lombok.extern.slf4j.Slf4j;
-
 @RestController
 @RequestMapping("/customer")
-@Slf4j
 public class CustomerController {
 	
 	private Customer customer;

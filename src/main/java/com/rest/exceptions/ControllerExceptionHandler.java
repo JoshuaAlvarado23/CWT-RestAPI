@@ -15,6 +15,7 @@ import org.springframework.web.context.request.WebRequest;
 @ControllerAdvice
 public class ControllerExceptionHandler {
 	
+	private static final String STATUS = "Status : "; 
 	
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<String> globalExceptionHandler (Exception ex, WebRequest web) {
@@ -22,7 +23,7 @@ public class ControllerExceptionHandler {
 				,LocalDateTime.now() 
 				,ex.getMessage()
 				,web.getDescription(false));
-		return new ResponseEntity<>("Status : "+ 
+		return new ResponseEntity<>(STATUS+ 
 				err.getStatusCode()+" -> "+err.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);	
 	}
 	
@@ -32,7 +33,7 @@ public class ControllerExceptionHandler {
 				,LocalDateTime.now()
 				,ex.getMessage()
 				,web.getDescription(false));
-		return new ResponseEntity<>("Status : "+ 
+		return new ResponseEntity<>(STATUS+ 
 				err.getStatusCode()+" -> "+err.getMessage(), HttpStatus.NOT_FOUND);
 	}
 	
@@ -44,7 +45,7 @@ public class ControllerExceptionHandler {
 				,LocalDateTime.now()
 				,ex.getMessage()
 				,web.getDescription(false));
-		return new ResponseEntity<>("Status : "+ 
+		return new ResponseEntity<>(STATUS+ 
 				err.getStatusCode()+" -> "+err.getMessage() , HttpStatus.BAD_REQUEST);
 	}
 	
