@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.rest.entities.CustFirstLastNameOnly;
+import com.rest.dto.CustFirstLastNameOnly;
 import com.rest.entities.Customer;
 import com.rest.persistence.CustomerRepo;
 

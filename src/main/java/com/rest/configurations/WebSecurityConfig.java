@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -39,7 +40,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers(PUBLIC_LIST).permitAll()
 		.anyRequest().authenticated();
 		
-		http.csrf().disable();
+		// can use http.csrf().disable(); for lenient implementation
+		http.csrf().csrfTokenRepository(new CookieCsrfTokenRepository());
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 	}

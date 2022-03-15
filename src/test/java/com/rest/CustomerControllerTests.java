@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -40,7 +41,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rest.controllers.CustomerController;
-import com.rest.entities.CustFirstLastNameOnly;
+import com.rest.dto.CustFirstLastNameOnly;
 import com.rest.entities.Customer;
 import com.rest.exceptions.NotFoundExceptionHandler;
 import com.rest.services.CustomerServiceImpl;
@@ -81,7 +82,7 @@ public class CustomerControllerTests {
 					.webAppContextSetup(context)
 					.apply(springSecurity())
 					.build();
-		
+	
 		}
 		
 		@AfterEach
@@ -144,12 +145,13 @@ public class CustomerControllerTests {
 			when(customerService.createCustomer(any(Customer.class))).thenReturn(mockCustomer);
 			
 			MvcResult result =  mockMvc.perform(post("/customer/secured/create")
+									.with(csrf())
 									.with(httpBasic("admin", "1234"))
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(mockCustomer)))
 									.andExpect(status().isCreated())
 									.andReturn();	
-		
+			
 			String response = result.getResponse().getContentAsString();
 			
 			Customer actualCust = mapper.readValue(response, Customer.class);
@@ -175,6 +177,7 @@ public class CustomerControllerTests {
 			
 			MvcResult result =  mockMvc.perform(delete("/customer/secured/delete/{id}",1)
 									.with(httpBasic("admin", "1234"))
+									.with(csrf())
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(mockCustomer)))
 									.andExpect(status().isOk())
@@ -207,6 +210,7 @@ public class CustomerControllerTests {
 			
 			MvcResult result =  mockMvc.perform(put("/customer/secured/update/{id}",2)
 									.with(httpBasic("admin", "1234"))
+									.with(csrf())
 									.accept(MediaType.APPLICATION_JSON)
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(update)))
@@ -227,7 +231,7 @@ public class CustomerControllerTests {
 		}
 		
 		@Test
-		@Order(5)
+		@Order(6)
 		@DisplayName("Partial Customer Update (First,LastName) - Controller Test")
 		void updatePartialCustomer() throws Exception {
 			
@@ -245,6 +249,7 @@ public class CustomerControllerTests {
 			
 			MvcResult result =  mockMvc.perform(patch("/customer/secured/partialupdatefirstandlastname/{id}",1)
 									.with(httpBasic("admin", "1234"))
+									.with(csrf())
 									.accept(MediaType.APPLICATION_JSON)
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(custFinal)))
@@ -318,6 +323,7 @@ public class CustomerControllerTests {
 			
 			MvcResult result =  mockMvc.perform(post("/customer/secured/create")
 									.with(httpBasic("user", "1234"))
+									.with(csrf())
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(mockCustomer)))
 									.andExpect(status().isUnauthorized())
@@ -340,6 +346,7 @@ public class CustomerControllerTests {
 			
 			MvcResult result =  mockMvc.perform(post("/customer/secured/create")
 									.with(httpBasic("admin", "1234"))
+									.with(csrf())
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(mockCustomer)))
 									.andExpect(status().isBadRequest())
@@ -362,6 +369,7 @@ public class CustomerControllerTests {
 			
 			MvcResult result =  mockMvc.perform(post("/customer/secured/create")
 									.with(httpBasic("admin", "1234"))
+									.with(csrf())
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(mockCustomer)))
 									.andExpect(status().isBadRequest())
@@ -385,11 +393,12 @@ public class CustomerControllerTests {
 			
 			MvcResult result =  mockMvc.perform(post("/customer/secured/create")
 									.with(httpBasic("admin", "1234"))
+									.with(csrf())
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(mockCustomer)))
 									.andExpect(status().isBadRequest())
 									.andReturn();	
-		
+			
 			String response = result.getResponse().getContentAsString();
 			TypeReference<HashMap<String,String>> mapRef = new TypeReference<HashMap<String,String>>() {};
 			HashMap<String,String> validationErrors = mapper.readValue(response, mapRef);
@@ -415,6 +424,7 @@ public class CustomerControllerTests {
 			
 			MvcResult result =  mockMvc.perform(delete("/customer/secured/delete/{id}",1)
 									.with(httpBasic("admin", "nottheapassword"))
+									.with(csrf())
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(mockCustomer)))
 									.andExpect(status().isUnauthorized())
@@ -440,6 +450,7 @@ public class CustomerControllerTests {
 			
 			MvcResult result =  mockMvc.perform(delete("/customer/secured/delete/{id}",99)
 									.with(httpBasic("admin", "1234"))
+									.with(csrf())
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(mockCustomer)))
 									.andExpect(status().isNotFound())
@@ -466,6 +477,7 @@ public class CustomerControllerTests {
 			
 			MvcResult result =  mockMvc.perform(put("/customer/secured/update/{id}",2)
 									.with(httpBasic("admin", "nopass"))
+									.with(csrf())
 									.accept(MediaType.APPLICATION_JSON)
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(update)))
@@ -493,6 +505,7 @@ public class CustomerControllerTests {
 			
 			MvcResult result =  mockMvc.perform(delete("/customer/secured/delete/{id}",98)
 									.with(httpBasic("admin", "1234"))
+									.with(csrf())
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(mockCustomer)))
 									.andExpect(status().isNotFound())
@@ -527,6 +540,7 @@ public class CustomerControllerTests {
 			MvcResult result =  mockMvc.perform(
 									patch("/customer/secured/partialupdatefirstandlastname/{id}",97)
 									.with(httpBasic("admin", "1234"))
+									.with(csrf())
 									.contentType("application/json")
 									.content(mapper.writeValueAsString(custFinal)))
 									.andExpect(status().isNotFound())

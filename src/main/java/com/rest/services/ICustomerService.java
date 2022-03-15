@@ -2,7 +2,7 @@ package com.rest.services;
 
 import java.util.List;
 
-import com.rest.entities.CustFirstLastNameOnly;
+import com.rest.dto.CustFirstLastNameOnly;
 import com.rest.entities.Customer;
 
 public interface ICustomerService {

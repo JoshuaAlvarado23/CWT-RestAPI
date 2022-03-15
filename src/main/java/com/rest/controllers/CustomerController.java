@@ -1,8 +1,9 @@
 package com.rest.controllers;
 
 import java.util.List;
-import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rest.entities.CustFirstLastNameOnly;
+import com.rest.dto.CustFirstLastNameOnly;
+import com.rest.dto.CustomerDTO;
 import com.rest.entities.Customer;
 import com.rest.exceptions.EmailExceptionHandling;
 import com.rest.exceptions.NotFoundExceptionHandler;
@@ -31,6 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/customer")
 @Slf4j
 public class CustomerController {
+	
+	private Customer customer;
 	
 	@Autowired
 	private ICustomerService customerService;
@@ -52,15 +55,21 @@ public class CustomerController {
 	}
 	
 	@PostMapping("/secured/create")
-	public ResponseEntity<Customer> createCust (@Valid @RequestBody Customer customerDTO,
-												@RequestHeader Map<String, String> headers) {
+	public ResponseEntity<Customer> createCust (@Valid @RequestBody CustomerDTO customerDTO,
+												HttpServletResponse res, HttpServletRequest req) {
+		
+			customer = new Customer(customerDTO.getCustId(), 
+									customerDTO.getFirstname(), 
+									customerDTO.getLastname(), 
+									customerDTO.getEmail(), 
+									customerDTO.getLocation(),
+									null);
 			
-			headers.entrySet().stream().forEach(e-> log.info(e.getValue()));
 			
-			if(customerService.getCustomerByEmail(customerDTO.getEmail()) != null) {
+			if(customerService.getCustomerByEmail(customer.getEmail()) != null) {
 				throw new EmailExceptionHandling("Email already exist!");
 			} else {
-				return new ResponseEntity<>(customerService.createCustomer(customerDTO), 
+				return new ResponseEntity<>(customerService.createCustomer(customer), 
 													HttpStatus.CREATED);
 			}
 	}
@@ -80,13 +89,20 @@ public class CustomerController {
 	
 	@PutMapping("/secured/update/{id}") 
 	public ResponseEntity<Customer> updateCust (@Valid @PathVariable Integer id, 
-												@Valid @RequestBody Customer customerDTO) { 
+												@Valid @RequestBody CustomerDTO customerDTO) { 
 			Customer getCustomer = customerService.findCustomerByID(id); 
 				if(getCustomer == null) {
 					throw new NotFoundExceptionHandler(id);
 				}
 				
-				return new ResponseEntity<>(customerService.updateCustomer(getCustomer, customerDTO), 
+				customer = new Customer(customerDTO.getCustId(), 
+						customerDTO.getFirstname(), 
+						customerDTO.getLastname(), 
+						customerDTO.getEmail(), 
+						customerDTO.getLocation(),
+						null);
+				
+				return new ResponseEntity<>(customerService.updateCustomer(getCustomer, customer), 
 													HttpStatus.ACCEPTED);
 	}
 	  
